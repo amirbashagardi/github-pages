@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسابقه ورزشی</title>
+    <style>
+        /* استایل کلی صفحه */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* استایل کانتینر کوئیز */
+        .quiz-container {
+            background-color: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+        }
+
+        /* استایل سوال */
+        .question {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* استایل گزینه‌ها */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            background-color: #444;
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .option:hover {
+            background-color: #555;
+        }
+
+        /* استایل گزینه انتخاب شده */
+        .option.selected {
+            background-color: #4CAF50;
+        }
+
+        /* استایل گزینه غلط */
+        .option.wrong {
+            background-color: #FF5733;
+        }
+
+        /* استایل دکمه بعدی */
+        .next-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .next-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <!-- سوال -->
+        <div class="question" id="question"></div>
+
+        <!-- گزینه‌ها -->
+        <div class="options" id="options"></div>
+
+        <!-- دکمه بعدی -->
+        <button class="next-button" id="next-button">سوال بعدی</button>
+    </div>
+
+    <script>
+        // سوالات و گزینه‌ها
+        const questions = [
+            {
+                question: "کدام تیم بیشترین قهرمانی در لیگ قهرمانان اروپا را دارد؟",
+                options: ["بارسلونا", "رئال مادرید", "بایرن مونیخ", "لیورپول"],
+                correctAnswer: "رئال مادرید"
+            },
+            {
+                question: "کدام ورزشکار عنوان سریع‌ترین مرد جهان را دارد؟",
+                options: ["یوسین بولت", "کارل لوئیس", "آسافا پاول", "جاستین گاتلین"],
+                correctAnswer: "یوسین بولت"
+            },
+            {
+                question: "کدام کشور میزبان المپیک ۲۰۲۴ است؟",
+                options: ["ژاپن", "فرانسه", "آمریکا", "چین"],
+                correctAnswer: "فرانسه"
+            },
+            {
+                question: "کدام بازیکن رکورد بیشترین گل در تاریخ فوتبال را دارد؟",
+                options: ["پله", "لیونل مسی", "کریستیانو رونالدو", "نیمار"],
+                correctAnswer: "کریستیانو رونالدو"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // عناصر DOM
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const nextButton = document.getElementById('next-button');
+
+        // نمایش سوال و گزینه‌ها
+        function showQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            questionElement.textContent = currentQuestion.question;
+            optionsElement.innerHTML = '';
+
+            currentQuestion.options.forEach(option => {
+                const button = document.createElement('div');
+                button.textContent = option;
+                button.classList.add('option');
+                button.addEventListener('click', () => selectAnswer(option, currentQuestion.correctAnswer));
+                optionsElement.appendChild(button);
+            });
+        }
+
+        // انتخاب گزینه
+        function selectAnswer(selectedOption, correctAnswer) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.style.pointerEvents = 'none'; // غیرفعال کردن کلیک روی سایر گزینه‌ها
+                if (option.textContent === correctAnswer) {
+                    option.classList.add('selected'); // گزینه صحیح
+                } else if (option.textContent === selectedOption && selectedOption !== correctAnswer) {
+                    option.classList.add('wrong'); // گزینه غلط
+                }
+            });
+
+            if (selectedOption === correctAnswer) {
+                score++;
+            }
+
+            nextButton.style.display = 'block'; // نمایش دکمه سوال بعدی
+        }
+
+        // رفتن به سوال بعدی
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+                nextButton.style.display = 'none'; // مخفی کردن دکمه سوال بعدی
+            } else {
+                alert(`مسابقه تمام شد! امتیاز شما: ${score} از ${questions.length}`);
+            }
+        });
+
+        // شروع مسابقه
+        showQuestion();
+    </script>
+
+</body>
+</html>
